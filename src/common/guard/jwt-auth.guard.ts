@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     ]);
     if (isPublic) {
       return true;
-    }.
+    }
 
     const req = context.switchToHttp().getRequest();
     const auth = req.headers.authorization;
