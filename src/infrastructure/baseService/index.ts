@@ -78,11 +78,17 @@ export class BaseService<CreateDto, Entity> {
   }
 
   async update(id: string, dto: Partial<CreateDto>) {
-    await this.findOneById(id);
-    await this.repository.update(id, {
+    const existing = await this.repository.findOne({
+      where: { id } as any,
+    });
+    if (!existing) {
+      throw new HttpException('not found', 404);
+    }
+    const merged = this.repository.merge(existing, {
       ...dto,
       updated_at: new Date(Date.now()),
-    });
+    } as any);
+    await this.repository.save(merged as any);
     return {
       status_code: 200,
       message: 'success',
